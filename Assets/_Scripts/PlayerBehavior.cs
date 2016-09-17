@@ -20,7 +20,11 @@ public class PlayerBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        //Rotate player to face mouse
         Rotation();
+
+        //Move the player´s body
+        Movment();
 
 	}
 
@@ -37,6 +41,38 @@ public class PlayerBehavior : MonoBehaviour {
         this.transform.rotation = rot;
 
     }
+
+    //Will move the player based off of keys pressed
+    void Movment()
+    {
+        Vector3 movement = new Vector3();
+        //Check for input
+        movement.x += Input.GetAxis("Horizontal");
+        movement.y += Input.GetAxis("Vertical");
+        /*
+         *If we pressed multiple buttons, make sure we´re only
+         *moving the same length.
+         */
+        movement.Normalize();
+        //Check if we pressed anything
+        if (movement.magnitude > 0)
+        {
+            //if we did, move in that direction 
+            currentSpeed = playerSpeed;
+            this.transform.Translate(movement * Time.deltaTime * playerSpeed, Space.World);
+            lastMovement = movement;
+        }
+        else
+        {
+            // Otherwise, move in the direction we were going
+            this.transform.Translate(lastMovement * Time.deltaTime * this.currentSpeed, Space.World);
+            //Slow down over time
+            currentSpeed *= .9f;
+        }
+    }
+
+   
+
 }
 
 
